@@ -7,17 +7,39 @@
 </head>
 
 <body>
-  <div class="container">
-    <em>
-        This is meant as a quick intro to how we will create front-end code for the rest of the semester.<br/>
-        The ONLY HTML-file you should consider is index.htm (in the public folder) and ALL your javascript code should go into the source folder.<br/>
-        Use this small example as a template for this week. Next time we will focus on JavaScript, it will be with React, i a way "similar" this<br/>
-        Make sure all your JavaScript code is included in index.js, the "by magic" it will be included in the bundle.js file which is included by the index.html
-    </em>
-    <br/>
-    <br/>
-    <h2>Jokes</h2>
-    <p id="jokes"> </p>
+  <div id="input" class="container">
+    <h2>Find Persons</h2>
+    <div class="input-group mb-3">
+      <input type="text" id="firstname" class="form-control" placeholder="First Name" required>
+      <input type="text" id="lastname" class="form-control" placeholder="Last Name" required>
+      <div class="input-group-append">
+        <button id="btnname" class="btn btn-outline-secondary">Search</button>
+      </div>
+    </div>
+    <div class="input-group mb-3">
+      <input type="text" id="hobby" class="form-control" placeholder="Hobby" required>
+      <div class="input-group-append">
+        <button id="btnhobby" class="btn btn-outline-secondary">Search</button>
+      </div>
+    </div>
+    <div class="input-group mb-3">
+      <input type="number" id="zipcode" class="form-control" placeholder="Zipcode" required>
+      <div class="input-group-append">
+        <button id="btnzipcode" class="btn btn-outline-secondary">Search</button>
+      </div>
+    </div>
+    <div class="input-group mb-3">
+      <input type="number" id="phone" class="form-control" placeholder="Phonenumber" required>
+      <div class="input-group-append">
+        <button id="btnphone" class="btn btn-outline-secondary">Search</button>
+      </div>
+    </div>
+    <div id="error">
+      
+    </div>
+  </div>
+  <div id="result" class="container">
+    <div id="table"></div>
   </div>
   <script src="bundle.js"></script>
 </body>

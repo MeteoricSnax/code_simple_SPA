@@ -1,8 +1,126 @@
 import 'bootstrap/dist/css/bootstrap.css'
-import jokes from "./jokes";
 
-const allJokes = jokes.getJokes().map(joke => "<li>"+joke+"</li>");
-document.getElementById("jokes").innerHTML = allJokes.join("");
+const url = 'http://localhost:8084/ExamCA2/api/person/';
+const table = document.getElementById("table");
+const btnname = document.getElementById("btnname");
+const btnhobby = document.getElementById("btnhobby");
+const btnzipcode = document.getElementById("btnzipcode");
+const btnphone = document.getElementById("btnphone");
+const fname = document.getElementById("firstname");
+const lname = document.getElementById("lastname");
+const hobby = document.getElementById("hobby");
+const zipcode = document.getElementById("zipcode");
+const phone = document.getElementById("phone");
 
+// Event Listeners
+btnname.addEventListener("click", update);
+btnhobby.addEventListener("click", update);
+btnzipcode.addEventListener("click", update);
+btnphone.addEventListener("click", getPersons);
+
+function update() {
+    let content = '<h2>Persons Found</h2>';
+    fetch(url, { method: 'GET' })
+        .then((response) => response.json())
+        .then((data) => {
+            content += '<table class="table"><tr><th>First Name</th><th>Last Name</th><th>Email</th><th></th></tr>';
+            content += data.map(el => `<tr><td>${el.firstName}</td><td>${el.lastName}</td><td>${el.email}</td>
+                <td><button type="button" href="#" class="btn btn-primary" id=btnedit${el.id}>edit</button>  
+                <button type="button" href="#" class="btn btn-primary" id=${el.id}>delete</button></td></tr>`).join("");
+            content += '</table>';
+            table.innerHTML = content;
+            document.querySelector("#table").addEventListener("click", clickHandler, false);
+        }).catch(error => {
+            console.log('error: ', error);
+        });
+}
+
+function getPersons() {
+    let content = '<h2>Persons Found</h2>';
+    if (validateInput(phone.value)) {
+        fetch(url + "phone/" + phone.value, { method: 'GET' })
+            .then((response) => response.json())
+            .then((json) => {
+                if (json.code) {
+                    console.log("Error");
+                    showError(json.message);
+                }
+                else {
+                    content += '<table class="table"><tr><th>First Name</th><th>Last Name</th><th>Email</th><th></th></tr>';
+                    content += json.map(el => `<tr><td>${el.firstName}</td><td>${el.lastName}</td><td>${el.email}</td>
+                <td><button type="button" href="#" class="btn btn-primary" id=btnedit${el.id}>edit</button>  
+                <button type="button" href="#" class="btn btn-primary" id=${el.id}>delete</button></td></tr>`).join("");
+                    content += '</table>';
+                    table.innerHTML = content;
+                    document.querySelector("#table").addEventListener("click", clickHandler, false);
+                }
+            }).catch(error => {
+                console.log('error: ', error);
+            });
+    }
+}
+/*
+function fetchGeneral(url, cb, input) {
+    if (validateInput(input)) {
+        fetch(url, { method: 'GET' })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (json) {
+                if (json.code) {
+                    console.log("Error");
+                    showError(json.message);
+                } else {
+                    cb(json);
+                }
+            })
+            .catch(function (error) {
+                console.log('Error: ' + error);
+            });
+    }
+} */
+
+// Validates the user input
+function validateInput(input) {
+    if (input == "") {
+        showError("Please enter a valid input");
+        return false;
+    } else {
+        hideError();
+        return true;
+    }
+}
+
+// Clickhandler 
+function clickHandler(e) {
+    if (e.target !== e.currentTarget && e.target.classList.contains("btndelete")) {
+        deletePerson(e.target.id);
+    }
+    e.stopPropagation();
+}
+
+// Displays an error message
+function showError(message) {
+    let error = '';
+    error += '<div class="alert alert-info"><strong>Error</strong> ' + message + '</div>';
+    document.getElementById("error").innerHTML = error;
+}
+
+// Hides the error message
+function hideError() {
+    document.getElementById("error").innerHTML = "";
+}
+
+// Deletes a person
+function deletePerson(id) {
+    fetch(url + id, { method: 'DELETE' })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            update();
+        }).catch(error => {
+            console.log('error: ', error);
+        });
+}
 
 
