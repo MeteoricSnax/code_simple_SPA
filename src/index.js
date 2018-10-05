@@ -13,53 +13,11 @@ const zipcode = document.getElementById("zipcode");
 const phone = document.getElementById("phone");
 
 // Event Listeners
-btnname.addEventListener("click", update);
-btnhobby.addEventListener("click", update);
-btnzipcode.addEventListener("click", update);
-btnphone.addEventListener("click", getPersons);
+//btnname.addEventListener("click", update);
+//btnhobby.addEventListener("click", update);
+btnzipcode.addEventListener("click", getPersonsByZip);
+btnphone.addEventListener("click", getPersonsByPhone);
 
-function update() {
-    let content = '<h2>Persons Found</h2>';
-    fetch(url, { method: 'GET' })
-        .then((response) => response.json())
-        .then((data) => {
-            content += '<table class="table"><tr><th>First Name</th><th>Last Name</th><th>Email</th><th></th></tr>';
-            content += data.map(el => `<tr><td>${el.firstName}</td><td>${el.lastName}</td><td>${el.email}</td>
-                <td><button type="button" href="#" class="btn btn-primary" id=btnedit${el.id}>edit</button>  
-                <button type="button" href="#" class="btn btn-primary" id=${el.id}>delete</button></td></tr>`).join("");
-            content += '</table>';
-            table.innerHTML = content;
-            document.querySelector("#table").addEventListener("click", clickHandler, false);
-        }).catch(error => {
-            console.log('error: ', error);
-        });
-}
-
-function getPersons() {
-    let content = '<h2>Persons Found</h2>';
-    if (validateInput(phone.value)) {
-        fetch(url + "phone/" + phone.value, { method: 'GET' })
-            .then((response) => response.json())
-            .then((json) => {
-                if (json.code) {
-                    console.log("Error");
-                    showError(json.message);
-                }
-                else {
-                    content += '<table class="table"><tr><th>First Name</th><th>Last Name</th><th>Email</th><th></th></tr>';
-                    content += json.map(el => `<tr><td>${el.firstName}</td><td>${el.lastName}</td><td>${el.email}</td>
-                <td><button type="button" href="#" class="btn btn-primary" id=btnedit${el.id}>edit</button>  
-                <button type="button" href="#" class="btn btn-primary" id=${el.id}>delete</button></td></tr>`).join("");
-                    content += '</table>';
-                    table.innerHTML = content;
-                    document.querySelector("#table").addEventListener("click", clickHandler, false);
-                }
-            }).catch(error => {
-                console.log('error: ', error);
-            });
-    }
-}
-/*
 function fetchGeneral(url, cb, input) {
     if (validateInput(input)) {
         fetch(url, { method: 'GET' })
@@ -70,6 +28,7 @@ function fetchGeneral(url, cb, input) {
                 if (json.code) {
                     console.log("Error");
                     showError(json.message);
+                    hideTable();
                 } else {
                     cb(json);
                 }
@@ -78,12 +37,37 @@ function fetchGeneral(url, cb, input) {
                 console.log('Error: ' + error);
             });
     }
-} */
+}
+
+// Updates the table 
+function updateTable(json) {
+    let content = '<h2>Persons Found</h2>';
+    content += '<table class="table"><tr><th>First Name</th><th>Last Name</th><th>Email</th><th></th></tr>';
+    content += json.map(el => `<tr><td>${el.firstName}</td><td>${el.lastName}</td><td>${el.email}</td>
+                <td><button type="button" href="#" class="btn btn-primary" id=btnedit${el.id}>edit</button>  
+                <button type="button" href="#" class="btn btn-primary btndelete" id=${el.id}>delete</button></td></tr>`).join("");
+    content += '</table>';
+    table.innerHTML = content;
+    document.querySelector("#table").addEventListener("click", clickHandler, false);
+}
+
+function hideTable(){
+    table.innerHTML = "";
+}
+
+function getPersonsByPhone(){
+    fetchGeneral(url + "phone/" + phone.value, updateTable, phone.value);
+}
+
+function getPersonsByZip(){
+    fetchGeneral(url + "zipcode/" + zipcode.value, updateTable, zipcode.value);
+}
 
 // Validates the user input
 function validateInput(input) {
     if (input == "") {
         showError("Please enter a valid input");
+        hideTable();
         return false;
     } else {
         hideError();
@@ -93,7 +77,9 @@ function validateInput(input) {
 
 // Clickhandler 
 function clickHandler(e) {
+    console.log("click");
     if (e.target !== e.currentTarget && e.target.classList.contains("btndelete")) {
+        console.log("delete");
         deletePerson(e.target.id);
     }
     e.stopPropagation();
@@ -117,9 +103,8 @@ function deletePerson(id) {
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
-            update();
         }).catch(error => {
-            console.log('error: ', error);
+            console.log('Error: ' + error);
         });
 }
 
