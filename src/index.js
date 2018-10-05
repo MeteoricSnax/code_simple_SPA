@@ -13,8 +13,8 @@ const zipcode = document.getElementById("zipcode");
 const phone = document.getElementById("phone");
 
 // Event Listeners
-//btnname.addEventListener("click", update);
-//btnhobby.addEventListener("click", update);
+btnname.addEventListener("click", getPersonsByName);
+btnhobby.addEventListener("click", getPersonsByHobby);
 btnzipcode.addEventListener("click", getPersonsByZip);
 btnphone.addEventListener("click", getPersonsByPhone);
 
@@ -61,6 +61,14 @@ function getPersonsByPhone(){
 
 function getPersonsByZip(){
     fetchGeneral(url + "zipcode/" + zipcode.value, updateTable, zipcode.value);
+}
+
+function getPersonsByHobby(){
+    fetchGeneral(url + "hobby/" + hobby.value, updateTable, hobby.value);
+}
+
+function getPersonsByName(){
+    fetchGeneral(url + "name?firstname=" + fname.value + "&lastname=" + lname.value, updateTable, fname.value);
 }
 
 // Validates the user input
