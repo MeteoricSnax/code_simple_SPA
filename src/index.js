@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css'
 
-const url = 'http://localhost:8084/ExamCA2/api/person/';
+const url = 'https://albertvandel.dk/ExamCA2-1.0-SNAPSHOT/api/person/';
 const table = document.getElementById("table");
 const btnname = document.getElementById("btnname");
 const btnhobby = document.getElementById("btnhobby");
